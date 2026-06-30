@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact – Roomie Charm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── PAGE BACKGROUND ── */
+    body { background: linear-gradient(160deg, #fff8f5 0%, #fde8f0 50%, #f0e8fd 100%); min-height: 100vh; }
+
+    /* ── FLOATING BLOBS ── */
+    .bg-blob { position: fixed; border-radius: 50%; filter: blur(80px); opacity: .35; pointer-events: none; z-index: 0; }
+    .bg-blob-1 { width: 500px; height: 500px; background: #f7c5d8; top: -150px; left: -150px; }
+    .bg-blob-2 { width: 400px; height: 400px; background: #e8d5f5; bottom: -100px; right: -100px; }
+    .bg-blob-3 { width: 300px; height: 300px; background: #fde8d8; top: 40%; left: 60%; }
+
+    /* ── HERO ── */
+    .ct-hero {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 7rem 2rem 3rem;
+    }
+    .ct-hero .eyebrow {
+      font-size: .75rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .18em; color: #c4577a; margin-bottom: .8rem;
+    }
+    .ct-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 600; color: #3a2535; line-height: 1.15; margin-bottom: .8rem;
+    }
+    .ct-hero h1 em { font-style: italic; color: #c4577a; }
+    .ct-hero p { font-size: .95rem; color: #7a5a6a; max-width: 480px; margin: 0 auto; line-height: 1.8; }
+
+    /* ── FLOATING PETALS ── */
+    .petals { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .petal {
+      position: absolute; font-size: 1.4rem; opacity: .5;
+      animation: floatPetal 8s ease-in-out infinite;
+    }
+    .petal:nth-child(1) { left: 8%;  top: 20%; animation-delay: 0s;   animation-duration: 7s; }
+    .petal:nth-child(2) { left: 80%; top: 15%; animation-delay: 1.5s; animation-duration: 9s; }
+    .petal:nth-child(3) { left: 60%; top: 55%; animation-delay: 3s;   animation-duration: 6s; }
+    .petal:nth-child(4) { left: 20%; top: 65%; animation-delay: 2s;   animation-duration: 8s; }
+    .petal:nth-child(5) { left: 90%; top: 70%; animation-delay: 4s;   animation-duration: 7s; }
+    @keyframes floatPetal {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%       { transform: translateY(-18px) rotate(12deg); }
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .ct-wrap {
+      position: relative; z-index: 1;
+      max-width: 1050px; margin: 0 auto;
+      padding: 0 2rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* ── INFO PANEL ── */
+    .ct-info-panel {
+      background: rgba(255,255,255,.65);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(247,197,216,.5);
+      border-radius: 24px;
+      padding: 2rem;
+      position: sticky;
+      top: 90px;
+    }
+    .ct-info-panel h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; font-weight: 600; color: #3a2535; margin-bottom: .6rem;
+    }
+    .ct-info-panel > p { font-size: .88rem; color: #7a5a6a; line-height: 1.8; margin-bottom: 1.8rem; }
+
+    .ct-detail { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+    .ct-detail-icon {
+      width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+    }
+    .icon-pink  { background: linear-gradient(135deg, #fde0e8, #f7c5d8); }
+    .icon-lav   { background: linear-gradient(135deg, #e8d5f5, #d5bfee); }
+    .icon-peach { background: linear-gradient(135deg, #fde8d8, #fdd5b8); }
+    .ct-detail-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; color: #c4577a; font-weight: 600; margin-bottom: 2px; }
+    .ct-detail-val   { font-size: .9rem; color: #3a2535; font-weight: 500; }
+
+    /* little divider */
+    .ct-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(247,197,216,.6), transparent); margin: 1.5rem 0; }
+
+    /* vibe quote */
+    .ct-quote {
+      background: linear-gradient(135deg, rgba(247,197,216,.25), rgba(232,213,245,.25));
+      border-radius: 16px; padding: 1.1rem 1.3rem;
+      font-family: 'Playfair Display', serif;
+      font-size: .95rem; font-style: italic; color: #9e3460; line-height: 1.6;
+    }
+
+    /* ── FORM CARD ── */
+    .ct-form-card {
+      background: rgba(255,255,255,.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(247,197,216,.45);
+      border-radius: 24px;
+      padding: 2.2rem;
+      box-shadow: 0 8px 40px rgba(196,87,122,.08);
+    }
+    .ct-form-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem; font-weight: 600; color: #3a2535;
+      margin-bottom: .3rem;
+    }
+    .ct-form-card .form-sub { font-size: .84rem; color: #7a5a6a; margin-bottom: 1.6rem; }
+
+    /* fields */
+    .fg { display: flex; flex-direction: column; gap: .35rem; margin-bottom: 1rem; }
+    .fg label {
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: #7a5a6a;
+    }
+    .fg input, .fg select, .fg textarea {
+      font-family: 'DM Sans', sans-serif; font-size: .92rem;
+      padding: .75rem 1rem;
+      border: 1.5px solid rgba(247,197,216,.55);
+      border-radius: 14px;
+      background: rgba(255,255,255,.8);
+      color: #3a2535; outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      width: 100%;
+    }
+    .fg input:focus, .fg select:focus, .fg textarea:focus {
+      border-color: #c4577a;
+      box-shadow: 0 0 0 3px rgba(196,87,122,.1);
+    }
+    .fg textarea { resize: vertical; min-height: 120px; }
+
+    /* topic chips */
+    .topic-chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+    .chip {
+      padding: .4rem 1rem; border-radius: 50px; font-size: .8rem; font-weight: 500;
+      border: 1.5px solid rgba(247,197,216,.6); background: rgba(255,255,255,.7);
+      color: #7a5a6a; cursor: pointer; transition: all .2s; font-family: 'DM Sans', sans-serif;
+    }
+    .chip:hover, .chip.selected {
+      background: #c4577a; border-color: #c4577a; color: #fff;
+    }
+    .topic-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #7a5a6a; margin-bottom: .5rem; }
+
+    /* submit btn */
+    .ct-submit {
+      width: 100%; padding: .95rem;
+      background: linear-gradient(135deg, #c4577a, #9b6ec4);
+      color: #fff; border: none; border-radius: 50px;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: transform .2s, box-shadow .2s;
+      margin-top: .5rem; letter-spacing: .02em;
+    }
+    .ct-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(196,87,122,.35); }
+    .ct-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* success */
+    .ct-success {
+      display: none; margin-top: 1rem;
+      background: linear-gradient(135deg, rgba(247,197,216,.3), rgba(232,213,245,.3));
+      border: 1px solid rgba(247,197,216,.6);
+      border-radius: 16px; padding: 1.2rem 1.4rem; text-align: center;
+    }
+    .ct-success .s-icon { font-size: 2.2rem; display: block; margin-bottom: .4rem; animation: bop .8s ease infinite alternate; }
+    @keyframes bop { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+    .ct-success p { font-family: 'Playfair Display', serif; font-size: 1rem; color: #9e3460; font-weight: 600; margin-bottom: .2rem; }
+    .ct-success span { font-size: .82rem; color: #7a5a6a; }
+
+    /* error */
+    .ct-error {
+      display: none; margin-top: 1rem;
+      background: #fde8e8; border: 1px solid #f5c6cb;
+      border-radius: 14px; padding: .9rem 1.1rem;
+      font-size: .85rem; color: #c0392b; text-align: center;
+    }
+
+    /* ── FOOTER ── */
+    .footer { position: relative; z-index: 1; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 750px) {
+      .ct-wrap { grid-template-columns: 1fr; }
+      .ct-info-panel { position: static; }
+      .ct-hero { padding: 6rem 1.5rem 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- blobs -->
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+<div class="bg-blob bg-blob-3"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="logo">Roomie Charm<span class="dot">✿</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="RC.openDrawer()" aria-label="View cart">
+      🛒<span class="cart-count hidden" id="cartCount">0</span>
+    </button>
+    <button class="hamburger" onclick="RC.toggleMenu()" aria-label="Menu">☰</button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="shop.html">Shop</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="RC.closeDrawer()"></div>
+<div class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Shopping cart">
+  <div class="cart-header">
+    <h2>Your cart 🛒</h2>
+    <button class="cart-close" onclick="RC.closeDrawer()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItemsList"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">R0.00</span></div>
+    <div class="cart-subtotal"><span>Shipping</span><span id="cartShipping">R60.00</span></div>
+    <div class="cart-total"><span>Total</span><span id="cartGrandTotal">R0.00</span></div>
+    <a href="checkout.html" class="btn-primary btn-full" onclick="RC.closeDrawer()">Checkout ✿</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="ct-hero">
+  <div class="petals">
+    <span class="petal">🌸</span>
+    <span class="petal">✿</span>
+    <span class="petal">🌷</span>
+    <span class="petal">💗</span>
+    <span class="petal">🌸</span>
+  </div>
+  <p class="eyebrow">say hello</p>
+  <h1>We'd love to<br/><em>hear from you</em></h1>
+  <p>Got a question, a collab idea, or just want to share your gorgeous room? We're all ears — and we reply with love! 💌</p>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="ct-wrap">
+
+  <!-- LEFT: INFO PANEL -->
+  <div class="ct-info-panel">
+    <h2>Let's chat 🌸</h2>
+    <p>Whether it's an order question, a styling collab, or just a general hello — we'd love to hear from you. Every message gets a reply!</p>
+
+    <div class="ct-detail">
+      <div class="ct-detail-icon icon-pink">💌</div>
+      <div>
+        <p class="ct-detail-label">Email</p>
+        <p class="ct-detail-val">roomiecharm@gmail.com</p>
+      </div>
+    </div>
+    <div class="ct-detail">
+      <div class="ct-detail-icon icon-lav">🌸</div>
+      <div>
+        <p class="ct-detail-label">Instagram</p>
+        <p class="ct-detail-val">@roomie_charm</p>
+        
+    </div>
+    </div>
+    <div class="ct-detail">
+      <div class="ct-detail-icon icon-peach">📍</div>
+      <div>
+        <p class="ct-detail-label">Based in</p>
+        <p class="ct-detail-val">South Africa 🇿🇦</p>
+      </div>
+    </div>
+
+    <div class="ct-divider"></div>
+
+    <div class="ct-quote">
+      "Your bedroom should feel like the best hug you've ever had." — Roomie Charm 🎀
+    </div>
+  </div>
+
+  <!-- RIGHT: FORM -->
+  <div class="ct-form-card">
+    <h3>Send us a message ✿</h3>
+    <p class="form-sub">Fill in the form below and we'll get back to you as soon as possible!</p>
+
+    <form
+      action="https://formspree.io/f/mkolzjww"
+      method="POST"
+      id="contactForm"
+      onsubmit="handleSubmit(event)"
+    >
+      <input type="hidden" name="_subject" value="New message from Roomie Charm 🌸"/>
+      <input type="text"   name="_gotcha"  style="display:none"/>
+      <input type="hidden" name="subject"  id="hiddenSubject" value="General hello"/>
+ 
+      <div class="fg">
+        <label>Your name</label>
+        <input type="text" name="name" placeholder="e.g. Sophie" required/>
+      </div>
+      <div class="fg">
+        <label>Email address</label>
+        <input type="email" name="email" placeholder="you@example.com" required/>
+      </div>
+
+      <!-- Topic chips instead of boring dropdown -->
+      <div>
+        <p class="topic-label">What's it about?</p>
+        <div class="topic-chips">
+          <button type="button" class="chip" onclick="selectTopic(this,'Order question')">🛍️ Order question</button>
+          <button type="button" class="chip" onclick="selectTopic(this,'Styling advice')">✨ Styling advice</button>
+          <button type="button" class="chip" onclick="selectTopic(this,'Collaboration')">🤝 Collaboration</button>
+          <button type="button" class="chip selected" onclick="selectTopic(this,'General hello')">💌 General hello</button>
+          <button type="button" class="chip" onclick="selectTopic(this,'Other')">💬 Other</button>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Your message</label>
+        <textarea name="message" placeholder="Tell us about your dream bedroom, ask about an order, or just say hi! We love hearing from you 🌸" required></textarea>
+      </div>
+
+      <button type="submit" class="ct-submit" id="submitBtn">Send message ✿</button>
+
+      <!-- Success -->
+      <div class="ct-success" id="successMsg">
+        <span class="s-icon">🎀</span>
+        <p>Message sent!</p>
+        <span>I'll reply to your email soon — thank you for reaching out! 💌</span>
+      </div>
+
+      <!-- Error -->
+      <div class="ct-error" id="errorMsg">
+        😢 Something went wrong — please email me directly at <strong>roomiecharm@gmailcom</strong>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="footer-logo">Roomie Charm<span class="dot">✿</span></p>
+    <p class="footer-tagline">Making bedrooms beautiful, one detail at a time.</p>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-copy">© 2026 Roomie Charm. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="cart.js"></script>
+<script>
+  function selectTopic(el, topic) {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('hiddenSubject').value = topic;
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const form    = e.target;
+    const btn     = document.getElementById('submitBtn');
+    const success = document.getElementById('successMsg');
+    const error   = document.getElementById('errorMsg');
+
+    btn.textContent = 'Sending... 💌';
+    btn.disabled    = true;
+    success.style.display = 'none';
+    error.style.display   = 'none';
+
+    try {
+      const res = await fetch(form.action, {
+        method:  'POST',
+        body:    new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        success.style.display = 'block';
+        form.reset();
+        // reset chips
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+        document.querySelector('.chip:nth-child(4)').classList.add('selected');
+        btn.textContent = 'Send message ✿';
+        btn.disabled    = false;
+      } else {
+        throw new Error('fail');
+      }
+    } catch {
+      error.style.display = 'block';
+      btn.textContent = 'Send message ✿';
+      btn.disabled    = false;
+    }
+  }
+</script>
+</body>
+</html>

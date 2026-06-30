@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About – Roomie Charm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="logo">Roomie Charm<span class="dot">✿</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">☰</button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="hero-blob blob1" style="opacity:0.5;"></div>
+    <p class="eyebrow">our story</p>
+    <h1>A little charm<br /><em>goes a long way</em></h1>
+  </section>
+
+  <!-- STORY -->
+  <section class="about-story">
+    <div class="story-text">
+      <h2>Where it all began</h2>
+      <p>Roomie Charm started with a tiny bedroom, a Pinterest board that was completely out of control, and one big dream: to make every girl's personal space feel like the most magical corner of the world.</p>
+      <p>We believe your bedroom is more than just a room — it's your sanctuary, your creative space, your escape. And it deserves to look exactly the way you feel on the inside: soft, beautiful, and full of personality.</p>
+      <p>From fairy-light inspo to floral styling guides, we're here to help you create the room you've always dreamed of — on any budget.</p>
+    </div>
+    <div class="story-visual">
+      <div class="story-blob-card">
+        <span style="font-size: 4rem;">🌸</span>
+        <p>Designed with love</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="values">
+    <p class="section-eyebrow">what we stand for</p>
+    <h2 class="section-title">Our little manifesto</h2>
+    <div class="values-list">
+      <div class="value-item">
+        <span class="value-num">01</span>
+        <div>
+          <h3>Beauty in the details</h3>
+          <p>It's the tiny things — a velvet cushion, a dried flower, a warm glow — that make a bedroom feel like yours.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <span class="value-num">02</span>
+        <div>
+          <h3>Style for every budget</h3>
+          <p>Your dream room shouldn't cost a fortune. We share ideas that work whether you're shopping at a thrift store or splurging a little.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <span class="value-num">03</span>
+        <div>
+          <h3>Your vibe, your rules</h3>
+          <p>We don't do one-size-fits-all. Whether you're into cottagecore, minimalist glam, or dark academia — we celebrate it all.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="cta-band">
+    <h2>Love what we do?</h2>
+    <p>Come say hello — we'd love to hear about your dream bedroom.</p>
+    <a href="contact.html" class="btn-primary">Get in touch</a>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-logo">Roomie Charm<span class="dot">✿</span></p>
+      <p class="footer-tagline">Making bedrooms beautiful, one detail at a time.</p>
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <p class="footer-copy">© 2026 Roomie Charm. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

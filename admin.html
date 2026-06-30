@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel – Roomie Charm ✿</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --pink:#f7c5d8;--pink-dark:#c4577a;--pink-deep:#9e3460;
+      --lav:#e8d5f5;--cream:#fff8f5;--text:#3a2535;--muted:#7a5a6a;--white:#fff;
+      --green:#3b6d11;--green-bg:#f5fde8;--r:14px;--rs:10px;
+    }
+    body{font-family:'DM Sans',sans-serif;background:#f9f0f5;color:var(--text);min-height:100vh;}
+    .topbar{background:var(--white);border-bottom:1px solid rgba(247,197,216,0.5);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+    .topbar-logo{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;color:var(--pink-deep);}
+    .topbar-logo span{color:var(--pink-dark);}
+    .topbar-links{display:flex;gap:.8rem;}
+    .topbar-links a{font-size:.82rem;font-weight:500;color:var(--muted);text-decoration:none;padding:.4rem 1rem;border-radius:50px;border:1px solid rgba(247,197,216,.6);transition:all .2s;}
+    .topbar-links a:hover{background:var(--pink);color:var(--pink-deep);}
+    .admin-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 60px);}
+    .sidebar{background:var(--white);border-right:1px solid rgba(247,197,216,.4);padding:1.5rem 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;}
+    .sidebar-section{padding:.5rem 1.2rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--pink-dark);font-weight:600;margin-top:1rem;}
+    .sidebar-item{display:flex;align-items:center;gap:.6rem;padding:.65rem 1.4rem;font-size:.88rem;color:var(--muted);cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+    .sidebar-item:hover{background:var(--cream);color:var(--text);}
+    .sidebar-item.active{background:linear-gradient(90deg,rgba(247,197,216,.3),transparent);color:var(--pink-deep);font-weight:500;border-left:3px solid var(--pink-dark);}
+    .main{padding:2rem;}
+    .panel{display:none;} .panel.active{display:block;}
+    .panel-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:600;color:var(--text);margin-bottom:.3rem;}
+    .panel-sub{font-size:.88rem;color:var(--muted);margin-bottom:1.8rem;}
+    .card{background:var(--white);border-radius:var(--r);border:1px solid rgba(247,197,216,.4);padding:1.5rem;margin-bottom:1.5rem;}
+    .card-title{font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:1rem;}
+    .field{display:flex;flex-direction:column;gap:.35rem;margin-bottom:1rem;}
+    .field label{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+    .field input,.field select,.field textarea{font-family:'DM Sans',sans-serif;font-size:.9rem;padding:.65rem .9rem;border:1.5px solid rgba(247,197,216,.6);border-radius:var(--rs);background:var(--white);color:var(--text);outline:none;transition:border-color .2s;width:100%;}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--pink-dark);}
+    .field textarea{resize:vertical;min-height:80px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    .btn{font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;padding:.6rem 1.4rem;border-radius:50px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;}
+    .btn-pink{background:var(--pink-dark);color:#fff;} .btn-pink:hover{background:var(--pink-deep);}
+    .btn-outline{background:transparent;color:var(--pink-dark);border:1.5px solid var(--pink-dark);} .btn-outline:hover{background:var(--pink);}
+    .btn-danger{background:transparent;color:#c0392b;border:1.5px solid #e74c3c;} .btn-danger:hover{background:#fde8e8;}
+    .btn-sm{padding:.35rem .9rem;font-size:.8rem;}
+    .btn-group{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem;}
+    .img-upload-box{border:2px dashed rgba(247,197,216,.8);border-radius:var(--r);padding:1.2rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--cream);position:relative;}
+    .img-upload-box:hover{border-color:var(--pink-dark);background:rgba(247,197,216,.08);}
+    .img-upload-box .upload-icon{font-size:2rem;margin-bottom:.4rem;}
+    .img-upload-box p{font-size:.82rem;color:var(--muted);}
+    .img-upload-box p strong{color:var(--pink-dark);}
+    .img-upload-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .img-previews{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.9rem;}
+    .img-thumb-wrap{position:relative;width:80px;height:80px;flex-shrink:0;}
+    .img-thumb-wrap img{width:80px;height:80px;object-fit:cover;border-radius:var(--rs);border:2px solid rgba(247,197,216,.6);}
+    .img-thumb-wrap.primary img{border-color:var(--pink-dark);}
+    .img-thumb-del{position:absolute;top:-6px;right:-6px;background:var(--pink-dark);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+    .img-primary-badge{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:.6rem;font-weight:700;color:#fff;background:rgba(196,87,122,.8);border-radius:0 0 8px 8px;padding:1px 0;}
+    .img-add-more{width:80px;height:80px;border:2px dashed rgba(247,197,216,.7);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--pink-dark);font-size:1.4rem;background:var(--cream);flex-shrink:0;transition:all .2s;position:relative;overflow:hidden;}
+    .img-add-more:hover{background:rgba(247,197,216,.2);}
+    .img-add-more input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .product-list{display:flex;flex-direction:column;gap:.8rem;}
+    .product-row{background:var(--white);border:1px solid rgba(247,197,216,.4);border-radius:var(--r);padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;transition:box-shadow .2s;}
+    .product-row:hover{box-shadow:0 4px 16px rgba(196,87,122,.1);}
+    .product-row-img{width:56px;height:56px;border-radius:var(--rs);background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;overflow:hidden;}
+    .product-row-img img{width:100%;height:100%;object-fit:cover;}
+    .product-row-info{flex:1;min-width:0;}
+    .product-row-name{font-size:.92rem;font-weight:500;color:var(--text);}
+    .product-row-meta{font-size:.78rem;color:var(--muted);margin-top:2px;}
+    .product-row-price{font-size:.95rem;font-weight:700;color:var(--pink-deep);white-space:nowrap;}
+    .product-row-actions{display:flex;gap:.5rem;flex-shrink:0;}
+    .badge-pill{font-size:.68rem;font-weight:600;padding:2px 8px;border-radius:50px;background:var(--pink);color:var(--pink-deep);}
+    .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;}
+    .cat-item{background:var(--white);border:1.5px solid rgba(247,197,216,.5);border-radius:var(--r);padding:1rem;display:flex;align-items:center;gap:.8rem;}
+    .cat-emoji-display{font-size:1.6rem;flex-shrink:0;}
+    .cat-info{flex:1;min-width:0;}
+    .cat-name{font-size:.85rem;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .cat-id{font-size:.72rem;color:var(--muted);}
+    .cat-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:1rem;padding:.2rem;flex-shrink:0;}
+    .cat-del:hover{color:#c0392b;}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem;}
+    .stat-card{background:var(--white);border-radius:var(--r);border:1px solid rgba(247,197,216,.4);padding:1.2rem;text-align:center;}
+    .stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:600;color:var(--pink-deep);}
+    .stat-label{font-size:.78rem;color:var(--muted);margin-top:4px;}
+    .toast{position:fixed;bottom:2rem;right:2rem;background:var(--text);color:#fff;padding:.8rem 1.4rem;border-radius:50px;font-size:.88rem;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;}
+    .toast.show{transform:translateY(0);opacity:1;}
+    .empty-state{text-align:center;padding:3rem;color:var(--muted);}
+    .empty-state span{font-size:3rem;display:block;margin-bottom:.8rem;}
+    .modal-bg{position:fixed;inset:0;background:rgba(58,37,53,.4);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
+    .modal-bg.open{display:flex;}
+    .modal{background:var(--white);border-radius:var(--r);padding:2rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative;}
+    .modal-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;margin-bottom:1.2rem;color:var(--text);}
+    .modal-close{position:absolute;top:1rem;right:1.2rem;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted);}
+    @media(max-width:680px){
+      .admin-layout{grid-template-columns:1fr;}
+      .sidebar{position:static;height:auto;display:flex;flex-wrap:wrap;gap:.3rem;padding:.8rem;border-right:none;border-bottom:1px solid rgba(247,197,216,.4);}
+      .sidebar-section{display:none;}
+      .sidebar-item{padding:.4rem .8rem;border-radius:50px;border:1px solid rgba(247,197,216,.4);width:auto;}
+      .sidebar-item.active{border-left:none;background:var(--pink);color:var(--pink-deep);}
+      .form-row{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+<!-- ══════════════════════════════════════
+     ADMIN LOGIN GATE — only you can pass
+═══════════════════════════════════════ -->
+<div id="loginGate" style="
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#fff8f5 0%,#f7e8f0 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Sans',sans-serif;
+">
+  <div style="
+    background:#fff;border-radius:20px;padding:2.5rem 2rem;
+    width:min(380px,92vw);text-align:center;
+    border:1px solid rgba(247,197,216,.5);
+    box-shadow:0 20px 60px rgba(58,37,53,.12);
+  ">
+    <!-- Logo -->
+    <div style="font-size:2.5rem;margin-bottom:.4rem;">🌸</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:600;color:#9e3460;margin-bottom:.3rem;">Roomie Charm</h1>
+    <p style="font-size:.82rem;color:#7a5a6a;margin-bottom:1.8rem;">Admin panel — owner access only</p>
+
+    <!-- Password field -->
+    <div style="margin-bottom:1rem;text-align:left;">
+      <label style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#7a5a6a;display:block;margin-bottom:.35rem;">Password</label>
+      <input
+        type="password" id="adminPwInput"
+        placeholder="Enter your admin password"
+        onkeydown="if(event.key==='Enter')checkAdminPw()"
+        style="
+          width:100%;padding:.75rem 1rem;border:1.5px solid rgba(247,197,216,.6);
+          border-radius:12px;font-size:.95rem;font-family:'DM Sans',sans-serif;
+          outline:none;color:#3a2535;transition:border-color .2s;
+        "
+        onfocus="this.style.borderColor='#c4577a'"
+        onblur="this.style.borderColor='rgba(247,197,216,.6)'"
+      />
+    </div>
+
+    <!-- Error message -->
+    <div id="loginError" style="
+      display:none;background:#fde8e8;color:#c0392b;
+      border-radius:10px;padding:.6rem .9rem;font-size:.82rem;
+      margin-bottom:.8rem;
+    ">❌ Wrong password — try again</div>
+
+    <!-- Login button -->
+    <button onclick="checkAdminPw()" style="
+      width:100%;background:#c4577a;color:#fff;border:none;
+      border-radius:50px;padding:.85rem;font-size:.95rem;font-weight:600;
+      cursor:pointer;font-family:'DM Sans',sans-serif;
+      transition:background .2s;
+    "
+    onmouseover="this.style.background='#9e3460'"
+    onmouseout="this.style.background='#c4577a'"
+    >Enter admin panel ✿</button>
+
+    <!-- Hint -->
+    <p style="font-size:.72rem;color:rgba(122,90,106,.5);margin-top:1.2rem;">
+      🔒 This page is private. If you're a customer, please visit the <a href="index.html" style="color:#c4577a;">main site</a>.
+    </p>
+  </div>
+</div>
+
+<!-- Main admin content — hidden until logged in -->
+<div id="adminContent" style="display:none;">
+
+
+<div class="topbar">
+  <div class="topbar-logo">Roomie Charm <span>✿</span> <span style="font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;">Admin Panel</span></div>
+  <div class="topbar-links">
+    <a href="shop.html" target="_blank">👀 View shop</a>
+    <a href="index.html" target="_blank">🏠 Homepage</a>
+    <button onclick="adminLogout()" style="font-size:.82rem;font-weight:500;color:#c4577a;background:none;border:1px solid rgba(247,197,216,.6);padding:.4rem 1rem;border-radius:50px;cursor:pointer;font-family:'DM Sans',sans-serif;">🔓 Log out</button>
+  </div>
+</div>
+
+<div class="admin-layout">
+  <nav class="sidebar">
+    <p class="sidebar-section">Manage</p>
+    <button class="sidebar-item active" onclick="showPanel('dashboard')">📊 Dashboard</button>
+    <button class="sidebar-item" onclick="showPanel('products')">🛍️ Products</button>
+    <button class="sidebar-item" onclick="showPanel('categories')">🗂️ Categories</button>
+    <p class="sidebar-section">Store</p>
+    <button class="sidebar-item" onclick="showPanel('layout')">🎨 Shop layout</button>
+    <button class="sidebar-item" onclick="showPanel('settings')">⚙️ Settings</button>
+    <p class="sidebar-section">Help</p>
+    <button class="sidebar-item" onclick="showPanel('guide')">💡 How-to guide</button>
+  </nav>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <h1 class="panel-title">Welcome back! 🌸</h1>
+      <p class="panel-sub">Here's a quick look at your Roomie Charm store.</p>
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="card">
+        <div class="card-title">⚡ Quick actions</div>
+        <div class="btn-group">
+          <button class="btn btn-pink" onclick="showPanel('products');openAddModal()">+ Add new product</button>
+          <button class="btn btn-outline" onclick="showPanel('categories')">Manage categories</button>
+          <button class="btn btn-outline" onclick="showPanel('layout')">Edit shop layout</button>
+          <a href="shop.html" target="_blank" class="btn btn-outline">View live shop</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📦 Your products</div>
+        <div id="dashProductList" class="product-list"></div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="panel" id="panel-products">
+      <h1 class="panel-title">Products 🛍️</h1>
+      <p class="panel-sub">Add, edit, or remove products. Upload a real photo for each one!</p>
+      <div class="btn-group" style="margin-bottom:1.5rem;">
+        <button class="btn btn-pink" onclick="openAddModal()">+ Add product</button>
+      </div>
+      <div class="product-list" id="productList"></div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="panel" id="panel-categories">
+      <h1 class="panel-title">Categories 🗂️</h1>
+      <p class="panel-sub">These appear as filter buttons in your shop. Add your own anytime!</p>
+      <div class="card">
+        <div class="card-title">✏️ Add a new category</div>
+        <div class="form-row">
+          <div class="field"><label>Category name</label><input id="newCatName" type="text" placeholder="e.g. Jewellery" /></div>
+          <div class="field"><label>Emoji icon</label><input id="newCatEmoji" type="text" placeholder="e.g. 💍" maxlength="4" /></div>
+        </div>
+        <button class="btn btn-pink" onclick="addCategory()">Add category</button>
+      </div>
+      <div class="cat-grid" id="catGrid"></div>
+    </div>
+
+    <!-- LAYOUT -->
+    <div class="panel" id="panel-layout">
+      <h1 class="panel-title">Shop layout 🎨</h1>
+      <p class="panel-sub">Choose how products appear in your shop — no code needed!</p>
+      <div class="card">
+        <div class="card-title">🖼️ Product display</div>
+        <div class="field"><label>Products per row (on desktop)</label>
+          <select id="layoutCols" onchange="saveLayout()">
+            <option value="2">2 columns — large cards</option>
+            <option value="3" selected>3 columns — standard</option>
+            <option value="4">4 columns — compact</option>
+          </select></div>
+        <div class="field"><label>Show product description on card</label>
+          <select id="layoutDesc" onchange="saveLayout()">
+            <option value="yes">Yes — show description</option>
+            <option value="no">No — keep it clean</option>
+          </select></div>
+        <div class="field"><label>Show badges (New, Bestseller, Sale)</label>
+          <select id="layoutBadges" onchange="saveLayout()">
+            <option value="yes">Yes — show badges</option>
+            <option value="no">No — hide badges</option>
+          </select></div>
+        <div class="field"><label>Default sort order in shop</label>
+          <select id="layoutSort" onchange="saveLayout()">
+            <option value="default">Newest first</option>
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+            <option value="name">Name A–Z</option>
+          </select></div>
+        <p style="font-size:.8rem;color:var(--muted);margin-top:.5rem;">Changes save automatically and apply to your shop instantly.</p>
+      </div>
+    </div>
+ 
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <h1 class="panel-title">Store settings ⚙️</h1>
+      <p class="panel-sub">Update your store name, shipping fees, and contact details.</p>
+      <div class="card">
+        <div class="card-title">🏪 Store info</div>
+        <div class="field"><label>Store name</label><input id="setStoreName" type="text" placeholder="Roomie Charm" /></div>
+        <div class="field"><label>Tagline</label><input id="setTagline" type="text" placeholder="Making bedrooms beautiful, one detail at a time." /></div>
+        <div class="field"><label>Email address</label><input id="setEmail" type="email" placeholder="roomiecharm.com" /></div>
+        <div class="field"><label>WhatsApp number</label><input id="setWhatsapp" type="text" placeholder="0626330376" /></div>
+        <div class="field"><label>Instagram handle</label><input id="setInsta" type="text" placeholder="@roomie_charm" /></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🚚 Shipping</div>
+        <div class="form-row">
+          <div class="field"><label>Shipping fee (R)</label><input id="setShipping" type="number" placeholder="60" /></div>
+          <div class="field"><label>Free shipping over (R)</label><input id="setFreeShipping" type="number" placeholder="500" /></div>
+        </div>
+        <div class="field"><label>Estimated delivery time</label><input id="setDelivery" type="text" placeholder="3–5 business days" /></div>
+      </div>
+      <button class="btn btn-pink" onclick="saveSettings()">Save settings ✿</button>
+    </div>
+
+    <!-- GUIDE -->
+    <div class="panel" id="panel-guide">
+      <h1 class="panel-title">How-to guide 💡</h1>
+      <p class="panel-sub">Everything you need to run your shop — no tech skills needed!</p>
+      <div class="card"><div class="card-title">🛍️ How to add a product</div>
+        <ol style="padding-left:1.2rem;line-height:2.4;font-size:.9rem;color:var(--muted);">
+          <li>Click <strong style="color:var(--text);">Products</strong> in the sidebar</li>
+          <li>Click <strong style="color:var(--text);">+ Add product</strong></li>
+          <li>Fill in the name, price, category and description</li>
+          <li>Click the photo box and pick an image from your computer</li>
+          <li>Click <strong style="color:var(--text);">Save product</strong> — done! It appears in your shop straight away.</li>
+        </ol></div>
+      <div class="card"><div class="card-title">🗂️ How to add a category</div>
+        <ol style="padding-left:1.2rem;line-height:2.4;font-size:.9rem;color:var(--muted);">
+          <li>Click <strong style="color:var(--text);">Categories</strong> in the sidebar</li>
+          <li>Type the category name (e.g. <em>Jewellery</em>)</li>
+          <li>Pick a fun emoji to represent it</li>
+          <li>Click <strong style="color:var(--text);">Add category</strong> — it appears as a filter button in your shop immediately!</li>
+        </ol></div>
+      <div class="card"><div class="card-title">📷 Tips for great product photos</div>
+        <ul style="padding-left:1.2rem;line-height:2.4;font-size:.9rem;color:var(--muted);">
+          <li>Use natural light — near a window is perfect</li>
+          <li>A plain white or cream background looks the cleanest</li>
+          <li>Square photos (1:1 ratio) work best for product cards</li>
+          <li>Keep file sizes under 2MB so your site loads fast</li>
+        </ul></div>
+      <div class="card"><div class="card-title">🌐 How to put your site online (free!)</div>
+        <ol style="padding-left:1.2rem;line-height:2.4;font-size:.9rem;color:var(--muted);">
+          <li>Go to <a href="https://netlify.com" target="_blank" style="color:var(--pink-dark);">netlify.com</a> and sign up free</li>
+          <li>Drag your entire <strong style="color:var(--text);">roomie-charm</strong> folder onto the Netlify dashboard</li>
+          <li>Your site goes live immediately with a free link!</li>
+          <li>You can connect a custom domain like <em>roomie-charm.co.za</em> later</li>
+        </ol></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-bg" id="productModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 class="modal-title" id="modalTitle">Add product ✿</h2>
+    <input type="hidden" id="editId" />
+    <div class="field">
+      <label>Product photos <span style="font-weight:400;color:var(--muted);text-transform:none;font-size:.78rem">(first photo = main image · click ✕ to remove)</span></label>
+      <div class="img-upload-box" id="uploadBox">
+        <input class="img-upload-input" type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(this)" />
+        <div class="upload-icon">📷</div>
+        <p><strong>Click to choose photos</strong> — you can select multiple at once!<br/><span style="font-size:.76rem">JPG, PNG or WEBP · max 3MB each</span></p>
+      </div>
+      <div class="img-previews" id="imgPreviews"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Product name *</label><input id="pName" type="text" placeholder="e.g. Rose Velvet Cushion" /></div>
+      <div class="field"><label>Price (R) *</label><input id="pPrice" type="number" min="0" step="0.01" placeholder="199" /></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Category *</label><select id="pCategory"></select></div>
+      <div class="field"><label>Badge (optional)</label>
+        <select id="pBadge">
+          <option value="">No badge</option>
+          <option value="New">New</option>
+          <option value="Bestseller">Bestseller</option>
+          <option value="Sale">Sale</option>
+          <option value="Limited">Limited</option>
+        </select></div>
+    </div>
+    <div class="field"><label>Description *</label><textarea id="pDesc" placeholder="Describe your product — material, size, colour, what makes it special..."></textarea></div>
+    <div class="field"><label>Stock status</label>
+      <select id="pStock">
+        <option value="in">In stock</option>
+        <option value="low">Low stock</option>
+        <option value="out">Out of stock</option>
+      </select></div>
+    <div class="btn-group">
+      <button class="btn btn-pink" onclick="saveProduct()">Save product ✿</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="cart.js"></script>
+<script>
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  const map={dashboard:0,products:1,categories:2,layout:3,settings:4,guide:5};
+  const items=document.querySelectorAll('.sidebar-item');
+  if(items[map[id]])items[map[id]].classList.add('active');
+  if(id==='products')renderProductList();
+  if(id==='categories')renderCategories();
+  if(id==='dashboard')window._imgs=[];
+
+// ── ADMIN PASSWORD GATE ──────────────────────────────────────
+// 🔑 CHANGE THIS PASSWORD to something only you know!
+const ADMIN_PASSWORD = 'roomiecharm2024';
+const SESSION_KEY    = 'rc_admin_authed';
+
+function checkAdminPw(){
+  const input = document.getElementById('adminPwInput').value;
+  const err   = document.getElementById('loginError');
+  if(input === ADMIN_PASSWORD){
+    // Store session so you don't have to re-enter on refresh (browser tab only)
+    sessionStorage.setItem(SESSION_KEY,'yes');
+    document.getElementById('loginGate').style.display='none';
+    document.getElementById('adminContent').style.display='block';
+    err.style.display='none';
+    renderDashboard();
+  } else {
+    err.style.display='block';
+    document.getElementById('adminPwInput').value='';
+    document.getElementById('adminPwInput').focus();
+    document.getElementById('adminPwInput').style.borderColor='#c0392b';
+    setTimeout(()=>document.getElementById('adminPwInput').style.borderColor='rgba(247,197,216,.6)',1500);
+  }
+}
+
+function adminLogout(){
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('loginGate').style.display='flex';
+  document.getElementById('adminContent').style.display='none';
+  document.getElementById('adminPwInput').value='';
+}
+
+// Auto-unlock if already authenticated this session
+if(sessionStorage.getItem(SESSION_KEY)==='yes'){
+  document.getElementById('loginGate').style.display='none';
+  document.getElementById('adminContent').style.display='block';
+}
+
+  if(id==='layout')loadLayout();
+  if(id==='settings')loadSettings();
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function renderDashboard(){
+  const products=RC.getProducts(),cats=RC.getCategories();
+  document.getElementById('statsGrid').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${products.length}</div><div class="stat-label">Products</div></div>
+    <div class="stat-card"><div class="stat-num">${cats.length}</div><div class="stat-label">Categories</div></div>
+    <div class="stat-card"><div class="stat-num">R${products.length?Math.min(...products.map(p=>p.price)).toFixed(0):'–'}</div><div class="stat-label">Lowest price</div></div>
+    <div class="stat-card"><div class="stat-num">R${products.length?Math.max(...products.map(p=>p.price)).toFixed(0):'–'}</div><div class="stat-label">Highest price</div></div>`;
+  const list=document.getElementById('dashProductList');
+  if(!products.length){list.innerHTML='<div class="empty-state"><span>🌸</span><p>No products yet!</p><button class="btn btn-pink btn-sm" onclick="showPanel(\'products\');openAddModal()" style="margin-top:.8rem;">Add your first product</button></div>';return;}
+  list.innerHTML=products.slice(0,6).map(p=>productRowHTML(p)).join('');
+}
+function renderProductList(){
+  const list=document.getElementById('productList'),products=RC.getProducts();
+  if(!products.length){list.innerHTML='<div class="empty-state"><span>🛍️</span><p>No products yet. Click <strong>+ Add product</strong> above!</p></div>';return;}
+  list.innerHTML=products.map(p=>productRowHTML(p)).join('');
+}
+function productRowHTML(p){
+  const cat=RC.getCategories().find(c=>c.id===p.category);
+  const img=p.img?`<div class="product-row-img"><img src="${p.img}" alt="${p.name}"></div>`:`<div class="product-row-img">${cat?cat.emoji:'🛍️'}</div>`;
+  return`<div class="product-row">${img}
+    <div class="product-row-info">
+      <div class="product-row-name">${p.name}${p.badge?` <span class="badge-pill">${p.badge}</span>`:''}</div>
+      <div class="product-row-meta">${cat?cat.emoji+' '+cat.label:p.category} · ${p.stock==='out'?'❌ Out of stock':p.stock==='low'?'⚠️ Low stock':'✅ In stock'}</div>
+    </div>
+    <div class="product-row-price">R${parseFloat(p.price).toFixed(2)}</div>
+    <div class="product-row-actions">
+      <button class="btn btn-outline btn-sm" onclick="openEditModal('${p.id}')">✏️ Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">🗑️</button>
+    </div></div>`;
+}
+function openAddModal(){
+  document.getElementById('modalTitle').textContent='Add product ✿';
+  document.getElementById('editId').value='';
+  ['pName','pDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pPrice').value='';
+  document.getElementById('pBadge').value='';
+  document.getElementById('pStock').value='in';
+  window._imgs=[];
+  renderImgPreviews();
+  populateCategorySelect();
+  document.getElementById('productModal').classList.add('open');
+}
+function openEditModal(id){
+  const p=RC.getProducts().find(x=>x.id===id);if(!p)return;
+  document.getElementById('modalTitle').textContent='Edit product ✿';
+  document.getElementById('editId').value=p.id;
+  document.getElementById('pName').value=p.name;
+  document.getElementById('pPrice').value=p.price;
+  document.getElementById('pDesc').value=p.desc;
+  document.getElementById('pBadge').value=p.badge||'';
+  document.getElementById('pStock').value=p.stock||'in';
+  // load existing images
+  window._imgs=Array.isArray(p.imgs)&&p.imgs.length?[...p.imgs]:(p.img?[p.img]:[]);
+  renderImgPreviews();
+  populateCategorySelect(p.category);
+  document.getElementById('productModal').classList.add('open');
+}
+function closeModal(){document.getElementById('productModal').classList.remove('open');}
+function populateCategorySelect(selected){
+  document.getElementById('pCategory').innerHTML=RC.getCategories().map(c=>`<option value="${c.id}"${selected===c.id?' selected':''}>${c.emoji} ${c.label}</option>`).join('');
+}
+function handlePhotos(input){
+  const files=Array.from(input.files);
+  if(!files.length)return;
+  let loaded=0;
+  files.forEach(file=>{
+    if(file.size>4*1024*1024){toast('Photo too large — try under 3MB');return;}
+    const reader=new FileReader();
+    reader.onload=e=>{
+      window._imgs.push(e.target.result);
+      loaded++;
+      if(loaded===files.filter(f=>f.size<=4*1024*1024).length) renderImgPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value=''; // reset so same files can be re-added if needed
+}
+function renderImgPreviews(){
+  const wrap=document.getElementById('imgPreviews');
+  if(!wrap)return;
+  const imgs=window._imgs||[];
+  wrap.innerHTML=imgs.map((src,i)=>`
+    <div class="img-thumb-wrap${i===0?' primary':''}">
+      <img src="${src}" alt="Photo ${i+1}">
+      <button class="img-thumb-del" onclick="removeImg(${i})" title="Remove">✕</button>
+      ${i===0?'<div class="img-primary-badge">Main</div>':''}
+    </div>`).join('')
+  + (imgs.length<10?`<div class="img-add-more" title="Add more photos"><input type="file" accept="image/*" multiple onchange="handlePhotos(this)"/>+</div>`:'');
+}
+function removeImg(idx){
+  window._imgs.splice(idx,1);
+  renderImgPreviews();
+}
+function saveProduct(){
+  const name=document.getElementById('pName').value.trim();
+  const price=parseFloat(document.getElementById('pPrice').value);
+  const desc=document.getElementById('pDesc').value.trim();
+  const category=document.getElementById('pCategory').value;
+  if(!name||!price||!desc||!category){toast('Please fill in all required fields ✿');return;}
+  const products=RC.getProducts();
+  const editId=document.getElementById('editId').value;
+  const imgs=window._imgs||[];
+  const product={id:editId||'p_'+Date.now(),name,price,desc,category,badge:document.getElementById('pBadge').value,stock:document.getElementById('pStock').value,img:imgs[0]||'',imgs:imgs};
+  if(editId){const idx=products.findIndex(p=>p.id===editId);if(idx>-1)products[idx]=product;}
+  else products.unshift(product);
+  RC.saveProducts(products);
+  closeModal();renderProductList();window._imgs=[];
+
+// ── ADMIN PASSWORD GATE ──────────────────────────────────────
+// 🔑 CHANGE THIS PASSWORD to something only you know!
+const ADMIN_PASSWORD = 'roomiecharm';
+const SESSION_KEY    = 'rc_admin_authed';
+
+function checkAdminPw(){
+  const input = document.getElementById('adminPwInput').value;
+  const err   = document.getElementById('loginError');
+  if(input === ADMIN_PASSWORD){
+    // Store session so you don't have to re-enter on refresh (browser tab only)
+    sessionStorage.setItem(SESSION_KEY,'yes');
+    document.getElementById('loginGate').style.display='none';
+    document.getElementById('adminContent').style.display='block';
+    err.style.display='none';
+    renderDashboard();
+  } else {
+    err.style.display='block';
+    document.getElementById('adminPwInput').value='';
+    document.getElementById('adminPwInput').focus();
+    document.getElementById('adminPwInput').style.borderColor='#c0392b';
+    setTimeout(()=>document.getElementById('adminPwInput').style.borderColor='rgba(247,197,216,.6)',1500);
+  }
+}
+
+function adminLogout(){
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('loginGate').style.display='flex';
+  document.getElementById('adminContent').style.display='none';
+  document.getElementById('adminPwInput').value='';
+}
+
+// Auto-unlock if already authenticated this session
+if(sessionStorage.getItem(SESSION_KEY)==='yes'){
+  document.getElementById('loginGate').style.display='none';
+  document.getElementById('adminContent').style.display='block';
+}
+
+  toast(editId?'✅ Product updated!':'✅ Product added to your shop!');
+}
+function deleteProduct(id){
+  if(!confirm('Delete this product? This cannot be undone.'))return;
+  RC.saveProducts(RC.getProducts().filter(p=>p.id!==id));
+  renderProductList();window._imgs=[];
+
+// ── ADMIN PASSWORD GATE ──────────────────────────────────────
+// 🔑 CHANGE THIS PASSWORD to something only you know!
+const ADMIN_PASSWORD = 'roomiecharm';
+const SESSION_KEY    = 'rc_admin_authed';
+
+function checkAdminPw(){
+  const input = document.getElementById('adminPwInput').value;
+  const err   = document.getElementById('loginError');
+  if(input === ADMIN_PASSWORD){
+    // Store session so you don't have to re-enter on refresh (browser tab only)
+    sessionStorage.setItem(SESSION_KEY,'yes');
+    document.getElementById('loginGate').style.display='none';
+    document.getElementById('adminContent').style.display='block';
+    err.style.display='none';
+    renderDashboard();
+  } else {
+    err.style.display='block';
+    document.getElementById('adminPwInput').value='';
+    document.getElementById('adminPwInput').focus();
+    document.getElementById('adminPwInput').style.borderColor='#c0392b';
+    setTimeout(()=>document.getElementById('adminPwInput').style.borderColor='rgba(247,197,216,.6)',1500);
+  }
+}
+
+function adminLogout(){
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('loginGate').style.display='flex';
+  document.getElementById('adminContent').style.display='none';
+  document.getElementById('adminPwInput').value='';
+}
+
+// Auto-unlock if already authenticated this session
+if(sessionStorage.getItem(SESSION_KEY)==='yes'){
+  document.getElementById('loginGate').style.display='none';
+  document.getElementById('adminContent').style.display='block';
+}
+toast('🗑️ Product deleted');
+}
+function renderCategories(){
+  const grid=document.getElementById('catGrid'),cats=RC.getCategories();
+  if(!cats.length){grid.innerHTML='<div class="empty-state"><span>🗂️</span><p>No categories yet.</p></div>';return;}
+  grid.innerHTML=cats.map(c=>`<div class="cat-item"><span class="cat-emoji-display">${c.emoji}</span><div class="cat-info"><div class="cat-name">${c.label}</div><div class="cat-id">${c.id}</div></div><button class="cat-del" onclick="deleteCategory('${c.id}')">✕</button></div>`).join('');
+}
+function addCategory(){
+  const name=document.getElementById('newCatName').value.trim();
+  const emoji=document.getElementById('newCatEmoji').value.trim()||'✨';
+  if(!name){toast('Please enter a category name');return;}
+  const id=name.toLowerCase().replace(/[^a-z0-9]/g,'_');
+  const cats=RC.getCategories();
+  if(cats.find(c=>c.id===id)){toast('That category already exists!');return;}
+  cats.push({id,label:name,emoji});RC.saveCategories(cats);
+  document.getElementById('newCatName').value='';document.getElementById('newCatEmoji').value='';
+  renderCategories();toast('✅ Category added!');
+}
+function deleteCategory(id){
+  if(!confirm('Delete this category?'))return;
+  RC.saveCategories(RC.getCategories().filter(c=>c.id!==id));
+  renderCategories();toast('🗑️ Category deleted');
+}
+function loadLayout(){
+  try{const l=JSON.parse(localStorage.getItem('rc_layout')||'{}');
+    if(l.cols)document.getElementById('layoutCols').value=l.cols;
+    if(l.badges)document.getElementById('layoutBadges').value=l.badges;
+    if(l.desc)document.getElementById('layoutDesc').value=l.desc;
+    if(l.sort)document.getElementById('layoutSort').value=l.sort;
+  }catch{}
+}
+function saveLayout(){
+  localStorage.setItem('rc_layout',JSON.stringify({cols:document.getElementById('layoutCols').value,badges:document.getElementById('layoutBadges').value,desc:document.getElementById('layoutDesc').value,sort:document.getElementById('layoutSort').value}));
+  toast('✅ Layout saved!');
+}
+function loadSettings(){
+  try{const s=JSON.parse(localStorage.getItem('rc_settings')||'{}');
+    document.getElementById('setStoreName').value=s.name||'';
+    document.getElementById('setTagline').value=s.tagline||'';
+    document.getElementById('setEmail').value=s.email||'';
+    document.getElementById('setWhatsapp').value=s.whatsapp||'';
+    document.getElementById('setInsta').value=s.insta||'';
+    document.getElementById('setShipping').value=s.shipping||'';
+    document.getElementById('setFreeShipping').value=s.freeShipping||'';
+    document.getElementById('setDelivery').value=s.delivery||'';
+  }catch{}
+}
+function saveSettings(){
+  localStorage.setItem('rc_settings',JSON.stringify({name:document.getElementById('setStoreName').value,tagline:document.getElementById('setTagline').value,email:document.getElementById('setEmail').value,whatsapp:document.getElementById('setWhatsapp').value,insta:document.getElementById('setInsta').value,shipping:document.getElementById('setShipping').value,freeShipping:document.getElementById('setFreeShipping').value,delivery:document.getElementById('setDelivery').value}));
+  toast('✅ Settings saved!');
+}
+window._imgs=[];
+
+// ── ADMIN PASSWORD GATE ──────────────────────────────────────
+// 🔑 CHANGE THIS PASSWORD to something only you know!
+const ADMIN_PASSWORD = 'roomiecharm';
+const SESSION_KEY    = 'rc_admin_authed';
+
+function checkAdminPw(){
+  const input = document.getElementById('adminPwInput').value;
+  const err   = document.getElementById('loginError');
+  if(input === ADMIN_PASSWORD){
+    // Store session so you don't have to re-enter on refresh (browser tab only)
+    sessionStorage.setItem(SESSION_KEY,'yes');
+    document.getElementById('loginGate').style.display='none';
+    document.getElementById('adminContent').style.display='block';
+    err.style.display='none';
+    renderDashboard();
+  } else {
+    err.style.display='block';
+    document.getElementById('adminPwInput').value='';
+    document.getElementById('adminPwInput').focus();
+    document.getElementById('adminPwInput').style.borderColor='#c0392b';
+    setTimeout(()=>document.getElementById('adminPwInput').style.borderColor='rgba(247,197,216,.6)',1500);
+  }
+}
+
+function adminLogout(){
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('loginGate').style.display='flex';
+  document.getElementById('adminContent').style.display='none';
+  document.getElementById('adminPwInput').value='';
+}
+
+// Auto-unlock if already authenticated this session
+if(sessionStorage.getItem(SESSION_KEY)==='yes'){
+  document.getElementById('loginGate').style.display='none';
+  document.getElementById('adminContent').style.display='block';
+}
+
+</script>
+
+</div><!-- end adminContent -->
+</body>
+</html>
